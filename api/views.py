@@ -1,3 +1,4 @@
+import re
 from rest_framework import viewsets
 
 from .serializer import *
@@ -6,7 +7,27 @@ from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.authentication import TokenAuthentication
+from rest_framework.generics import GenericAPIView,mixins
 
+
+
+class UserAPiview(GenericAPIView,mixins.CreateModelMixin,mixins.UpdateModelMixin,mixins.RetrieveModelMixin):
+    serializer_class = RegisterSerializer
+    queryset = CustomUser.objects.all()
+    lookup_field = "id"
+    
+    def get(self,requset,id=None):
+        
+        if id :
+            self.retrieve(requset,id)
+        else:
+            query_set=self.get_queryset()
+            serializer=self.get_serializer(query_set)
+            return Response({'data':serializer.data})
+    
+            
+        
+    
 
 class CategoryView(APIView):
     permission_classes = [IsAuthenticated, ]
@@ -33,7 +54,7 @@ class ProductView(APIView):
     authentication_classes = [TokenAuthentication, ]
 
     def get(self, request, pk):
-        query = Product.objects.filter(id=pk)
+        query = Products.objects.filter(id=pk)
         data = []
         serializer_context = {
             'request': request,
