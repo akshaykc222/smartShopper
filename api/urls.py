@@ -3,6 +3,9 @@ from .views import *
 from rest_framework.authtoken.views import ObtainAuthToken
 
 urlpatterns = [
+    path('login/', LoginAPiview.as_view()),
+    path('register/', RegisterView.as_view()),
+    path('users/', UserAPiview.as_view()),
     path('category/', CategoryView.as_view()),
     path('subcategory/<int:pk>/', SubCategoryView.as_view()),
     path('products/<int:pk>/', ProductView.as_view()),

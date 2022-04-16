@@ -79,7 +79,7 @@ class FavouriteView(APIView):
 
         product = request.data["id"]
         try:
-            product_obj = Product.objects.get(id=product)
+            product_obj = Products.objects.get(id=product)
             user = request.user
             single_favourite_product = Favourite.objects.filter(user=user).filter(product=product_obj).first()
             if single_favourite_product:
@@ -99,13 +99,33 @@ class FavouriteView(APIView):
         return Response(response_msg)
 
 
-class RegisterView(APIView):
+class RegisterView(GenericAPIView,mixins.CreateModelMixin,mixins.UpdateModelMixin):
+    serializer_class = RegisterSerializer
+    queryset = CustomUser.objects.all()
     def post(self, request):
-        serializer = UserSerializer(data=request.data)
-        if serializer.is_valid():
-            serializer.save()
-            return Response({"error": False})
-        return Response({"error": True})
+
+        return self.create(request)
+
+class LoginAPiview(GenericAPIView):
+    authentication_classes = [] #disables authentication
+    permission_classes = []
+    serializer_class = UserSerializer
+    queryset=CustomUser.objects.all()
+    def post(self,request,id=None):
+        try:
+            email=request.data.get('email')
+            password=request.data.get('password')
+            account=CustomUser.objects.get(email=email,password=password)
+            if account.is_active:
+                serialzer=UserDetailsSerializer(account)
+                token = Token.objects.get_or_create(user=account)[0].key
+                print(token)
+                return Response({'token':token,'user':serialzer.data})
+            else:
+                return Response({'error':'User is deactivated.Please contact admin'})
+        except Exception as e:
+            print(e)
+            return Response({'error':'invalid username or password'})
 
 
 class CartView(APIView):
@@ -151,7 +171,7 @@ class AddToCart(APIView):
 
     def post(sefl, request):
         product_id = request.data['id']
-        product_obj = Product.objects.get(id=product_id)
+        product_obj = Products.objects.get(id=product_id)
         # print(product_obj, "product_obj")
         cart_cart = Cart.objects.filter(
             user=request.user).filter(isComplit=False).first()
@@ -261,5 +281,6 @@ class OrderCreate(APIView):
             )
             response_msg = {"error": False, "message": "Your Order is Complit"}
         except:
-            response_msg = {"error": True, "message": "Somthing is Wrong !"}
+            response_msg = {"error": True,  "message": "Somthing is Wrong !"}
         return Response(response_msg)
+

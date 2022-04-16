@@ -104,7 +104,7 @@ class RegisterSerializer(serializers.Serializer):
         validated_data.pop('password1')
         validated_data['password']= get_adapter().clean_password( validated_data.pop('password2'))
         
-        permissions=validated_data.pop('permissions')
+        # permissions=validated_data.pop('permissions')
         permission_ids=[]
         # for i in permissions:
         #     ui=UserRoles.objects.create(**i)
@@ -112,20 +112,40 @@ class RegisterSerializer(serializers.Serializer):
         
         # permission_is
         user=CustomUser.objects.create(**validated_data)
-        user.permissions.set(permission_ids)
+        # user.permissions.set(permission_ids)
         return user
 
     def update(self, instance, validated_data):
         print("updatie i")
         validated_data['password']= get_adapter().clean_password( validated_data.pop('password2'))
-        permissions=validated_data.pop('permissions')
-        permission_ids=[]
+  
      
         return super().update(instance, validated_data)
+    # def to_representation(self, instance):
+    #     data= super().to_representation(instance)
+    #     try:
+    #         data['designation']=DesignationSerializer(Designation.objects.get(id=data['designation'])).data
+    #     except:
+    #         print('not found')
+    #     return data
+    
+class UserDetailsSerializer(serializers.ModelSerializer):
+    designation = serializers.PrimaryKeyRelatedField(queryset=Designation.objects.all())
+ 
+    class Meta:
+        model = CustomUser
+        fields = ('id', 'name', 'email', 'phone',
+                  'designation', 'password','is_active')
+        read_only_fields = ('email', )
+
     def to_representation(self, instance):
         data= super().to_representation(instance)
+        print(data['designation'])
+
         try:
             data['designation']=DesignationSerializer(Designation.objects.get(id=data['designation'])).data
-        except:
-            print('not found')
+        except Exception as e:
+            print(e)
+      
+        
         return data
