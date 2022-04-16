@@ -12,7 +12,7 @@ from rest_framework.generics import GenericAPIView,mixins
 
 
 class UserAPiview(GenericAPIView,mixins.CreateModelMixin,mixins.UpdateModelMixin,mixins.RetrieveModelMixin):
-    serializer_class = RegisterSerializer
+    serializer_class = UserDetailsSerializer
     queryset = CustomUser.objects.all()
     lookup_field = "id"
     
@@ -22,7 +22,7 @@ class UserAPiview(GenericAPIView,mixins.CreateModelMixin,mixins.UpdateModelMixin
             self.retrieve(requset,id)
         else:
             query_set=self.get_queryset()
-            serializer=self.get_serializer(query_set)
+            serializer=self.get_serializer(query_set,many=True)
             return Response({'data':serializer.data})
     
             

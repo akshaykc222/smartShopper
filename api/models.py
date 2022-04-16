@@ -46,11 +46,11 @@ class Address(models.Model):
     user=models.ForeignKey(settings.AUTH_USER_MODEL,related_name="user_address",on_delete=models.CASCADE)
     phone_number=models.CharField(max_length=20)
     name=models.CharField(max_length=150)
-    type=models.CharField(choices=ADDRESS_TYPE,max_length=50,default="HOME")
+    type=models.CharField(choices=ADDRESS_TYPE,max_length=20,default="HOME")
     address=models.TextField()
 
-    def __str__(self) -> str:
-        return self.user.name
+    def __str__(self):
+        return str(self.name)
     
     
 

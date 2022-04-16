@@ -129,23 +129,31 @@ class RegisterSerializer(serializers.Serializer):
     #         print('not found')
     #     return data
     
+class AddressDetailsSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Address
+        fields = '__all__'
+        
+
 class UserDetailsSerializer(serializers.ModelSerializer):
     designation = serializers.PrimaryKeyRelatedField(queryset=Designation.objects.all())
- 
+    address  = AddressDetailsSerializer(many=True)
     class Meta:
         model = CustomUser
         fields = ('id', 'name', 'email', 'phone',
-                  'designation', 'password','is_active')
+                  'designation','address' ,'password','is_active')
         read_only_fields = ('email', )
 
     def to_representation(self, instance):
         data= super().to_representation(instance)
-        print(data['designation'])
+       
 
         try:
-            data['designation']=DesignationSerializer(Designation.objects.get(id=data['designation'])).data
+            
+            data['designation']=DesignationSerializer(Designation.objects.get(id = data['designation'])).data
+            
         except Exception as e:
-            print(e)
+            
+            print("___designation not found___")
       
-        
         return data

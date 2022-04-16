@@ -1,3 +1,4 @@
+from ast import Add
 from django.contrib import admin
 from .models import *
 
@@ -13,3 +14,4 @@ admin.site.register(Order)
 admin.site.register(CartProduct)
 admin.site.register(Designation)
 admin.site.register(CustomUser)
+admin.site.register(Address)
