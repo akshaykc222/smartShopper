@@ -39,11 +39,14 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'rest_framework',
+    'django_filters',
     'rest_framework.authtoken',
     'corsheaders',
+    'rest_auth',
     'allauth',
     'allauth.account',
-    'api'
+    'api',
+    'allauth.socialaccount',
 ]
 CORS_ALLOWED_ORGINS = [
     "http://localhost:8080",
