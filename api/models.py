@@ -82,7 +82,7 @@ class CustomUser(AbstractBaseUser, PermissionsMixin):
 
 class Business(models.Model):
     name=models.CharField(max_length=150)
-    logo=models.ImageField(upload_to='uploads/', blank=True, null=True)
+    logo=models.ImageField(upload_to='static/logos', blank=True, null=True)
     tax_number=models.CharField(max_length=50)
     address=models.TextField()
     email=models.EmailField()
@@ -97,7 +97,7 @@ class Business(models.Model):
 class Category(models.Model):
     name = models.CharField(max_length=200)
     slug = models.SlugField()
-    icon = models.ImageField(upload_to='uploads/', blank=True, null=True)
+    icon = models.ImageField(upload_to='static/category', blank=True, null=True)
 
     class Meta:
         ordering = ("name",)
@@ -112,7 +112,7 @@ class Category(models.Model):
 
 class SubCategory(models.Model):
     category = models.ForeignKey(Category, related_name='sub_category', on_delete=models.CASCADE)
-    image= models.ImageField(upload_to='uploads/', blank=True, null=True)
+    image= models.ImageField(upload_to='static/sub_category', blank=True, null=True)
     name = models.CharField(max_length=200)
     slug = models.SlugField()
 
@@ -150,7 +150,7 @@ class ColorVariant(models.Model):
 
 class ProductImages(models.Model):
     is_vedio=models.URLField()
-    image = models.ImageField(upload_to="uploads/",null=True,blank=True)
+    image = models.ImageField(upload_to="static/products",null=True,blank=True)
     created_date = models.DateTimeField(auto_now_add=True)
     uploaded_user = models.ForeignKey(settings.AUTH_USER_MODEL,related_name="media_uploaded_user",on_delete=models.CASCADE)
 
